@@ -8,14 +8,14 @@ class Field
 
     @myPosition = nil
     @opponentPosition = nil
-    @enemyPositions = nil
-    @snippetPositions = nil
-    @bombPositions = nil
-    @tickingBombPositions = nil
+    @enemyPositions = Array.new
+    @snippetPositions = Array.new
+    @bombPositions = Array.new
+    @tickingBombPositions = Array.new
   end
 
   def initialize_field(width, height)
-    Array.new(height){Array.new(width)}
+    Array.new(width){Array.new(height)}
   end
 
   def clearField
@@ -27,10 +27,32 @@ class Field
 
     @myPosition = nil
     @opponentPosition = nil
-    @enemyPositions = nil
-    @snippetPositions = nil
-    @bombPositions = nil
-    @tickingBombPositions = nil
+    @enemyPositions.clear()
+    @snippetPositions.clear()
+    @bombPositions.clear()
+    @tickingBombPositions.clear()
 	end
+
+	def parseFromString(input)
+    self.clearField()
+
+    cells = input.split(",")
+    x = 0
+    y = 0
+
+    cells.each do |cellString| 
+      @cells[x][y] = cellString
+      puts cellString
+      puts x
+      puts y
+
+      x += 1
+      if x == @width
+        x = 0
+        y += 1
+      end
+    end # End looping through cellString
+  end
+
 end
 

@@ -43,9 +43,8 @@ class Game
       when "field"
         if @field.nil?
           @field = Field.new(@settings[:field_width], @settings[:field_height])
-        else
-          # TODO: Update the field
         end
+        @field.parseFromString(value)
       end
     # TODO: when command is a player nmae 
     end  
