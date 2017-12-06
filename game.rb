@@ -50,7 +50,7 @@ class Game
   def action(command, value)
     case command
     when "character"
-      # TODO: Get the character
+      puts @settings[:character]
     when "move"
       # TODO: Move the bot
     end
