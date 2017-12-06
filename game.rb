@@ -16,8 +16,8 @@ class Game
     @last_timebank = 0
   end
 
-  def update_settings(setting, value)
-    case setting
+  def setting(command, value)
+    case command
     when "timebank"
       @timebank = value.to_i
     when "time_per_move"
@@ -36,7 +36,29 @@ class Game
       @max_rounds = value.to_i
     end # Ending setting the setting
 
-    puts "Setting #{setting} to #{value}"
+    puts "Setting #{command} to #{value}"
+  end
+
+  def update(target, command, value)
+    case target
+    when "game"
+      case command
+      when "round"
+        # TODO: update the round
+      when "field"
+        # TODO: Update the field
+      end
+    # TODO: when command is a player nmae 
+    end  
+  end
+
+  def action(command, value)
+    case command
+    when "character"
+      # TODO: Get the character
+    when "move"
+      # TODO: Move the bot
+    end
   end
 
   def run
@@ -44,16 +66,16 @@ class Game
 
     while not_finished
       line = gets.chomp
-      tokens = line.split()
+      command_parts = line.split()
 
-      key0 = tokens[0]
+      key0 = command_parts[0]
       case key0
       when "settings"
-        self.update_settings(tokens[1],tokens[2])
+        self.update_settings(command_parts[1],command_parts[2])
       when "update"
 
       when "action"
-
+        do_action(command_parts[1],command_parts[2])
       when "quit"
         not_finished=false
       else 
