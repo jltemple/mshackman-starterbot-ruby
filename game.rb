@@ -3,6 +3,18 @@ require './field'
 
 class Game
 
+  SETTINGS_MAPPINGS = {
+    "timebank" => :initial_timebank,
+    "time_per_move" => :time_per_move,
+    "player_names" => :player_names,
+    "your_bot" => :my_bot,
+    "your_botid" => :my_botid,
+    "field_width" => :field_width,
+    "field_height" => :field_height,
+    "max_rounds" => :max_rounds,
+    "character" => :character
+  }
+
   def initialize(character)
     @settings = {
       initial_timebank: 0,
@@ -26,17 +38,22 @@ class Game
 
   def set_settings(command, value)
     case command
-    when "player_names"
-      @player_names = value.split(',')
-    when "timebank", "time_per_move", "your_bot", "your_botid", "field_width", "field_height", "max_rounds"
-      @settings[command.to_sym] = value.to_i
+    when "player_names" 
+      # Split and set any array values
+      @settings[:player_names] = value.split(',')
+    when "your_bot" 
+      # Just set any string values
+      @settings[SETTINGS_MAPPINGS[command]] = value
+    when "timebank", "time_per_move", "your_botid", "field_width", "field_height", "max_rounds" 
+      # Cast and set any integer values
+      @settings[SETTINGS_MAPPINGS[command]] = value.to_i
     end # Ending setting the setting
-    puts "Setting #{command} to #{value}"
   end
 
   def update(target, command, value)
     case target
     when "game"
+
       case command
       when "round"
         # TODO: update the round
@@ -45,9 +62,11 @@ class Game
           @field = Field.new(@settings[:field_width], @settings[:field_height])
         end
         @field.parseFromString(value)
-      end
-    # TODO: when command is a player nmae 
-    end  
+      end # End cases for "game"
+
+    when *@settings[:player_names]
+      # TODO: when command is a player name 
+    end
   end
 
   def action(command, value)
