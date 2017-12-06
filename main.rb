@@ -5,5 +5,3 @@ require './game'
 game = Game.new("bixiette")
 
 game.run()
-
-p game

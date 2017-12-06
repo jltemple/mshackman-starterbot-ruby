@@ -1,17 +1,19 @@
 class Field
-  S_EMPTY, S_BLOCKED, S_PLAYER, S_BUG_SPAWN, S_GATE, S_BUG, S_MINE, S_CODE = ['.', 'x', 'P', 'S', 'G', 'E', 'B', 'C']
+  S_EMPTY, S_BLOCKED, S_PLAYER, S_BUG_SPAWN, S_GATE, S_BUG, S_BOMB, S_CODE = ['.', 'x', 'P', 'S', 'G', 'E', 'B', 'C']
 
   def initialize(width, height)
     @width = width
     @height = height
     @cells = self.initialize_field(@width, @height)
 
-    @myPosition = nil
-    @opponentPosition = nil
-    @enemyPositions = Array.new
-    @snippetPositions = Array.new
-    @bombPositions = Array.new
-    @tickingBombPositions = Array.new
+    @positions = {
+      me: nil,
+      opponent: nil,
+      enemies: Array.new,
+      snippets: Array.new,
+      bombs: Array.new,
+      ticking_bombs: Array.new
+    }
   end
 
   def initialize_field(width, height)
@@ -27,12 +29,14 @@ class Field
   end
 
   def clearPositions
-    @myPosition = nil
-    @opponentPosition = nil
-    @enemyPositions.clear()
-    @snippetPositions.clear()
-    @bombPositions.clear()
-    @tickingBombPositions.clear()
+    @positions = {
+      me: nil,
+      opponent: nil,
+      enemies: Array.new,
+      snippets: Array.new,
+      bombs: Array.new,
+      ticking_bombs: Array.new
+    }
   end
 
   def clearField

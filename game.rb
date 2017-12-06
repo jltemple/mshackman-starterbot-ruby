@@ -1,7 +1,9 @@
 require './player'
 require './field'
+require './bot'
 
 class Game
+  attr_reader :settings, :players, :field
 
   SETTINGS_MAPPINGS = {
     "timebank" => :initial_timebank,
@@ -32,8 +34,7 @@ class Game
     @round = 0
     @last_update = 0
     @last_timebank = 0
-
-    @players = [Player.new, Player.new]
+    @players = nil
   end
 
   def set_settings(command, value)
@@ -41,8 +42,14 @@ class Game
     when "player_names" 
       # Split and set any array values
       @settings[:player_names] = value.split(',')
+      first_name = @settings[:player_names][0]
+      second_name = @settings[:player_names][1]
+      @players = {
+        first_name => Player.new(first_name),
+        second_name => Player.new(second_name)
+      }
     when "your_bot" 
-      # Just set any string values
+      # Set any string values
       @settings[SETTINGS_MAPPINGS[command]] = value
     when "timebank", "time_per_move", "your_botid", "field_width", "field_height", "max_rounds" 
       # Cast and set any integer values
@@ -56,7 +63,7 @@ class Game
 
       case command
       when "round"
-        # TODO: update the round
+        @round = value.to_i
       when "field"
         if @field.nil?
           @field = Field.new(@settings[:field_width], @settings[:field_height])
@@ -65,8 +72,13 @@ class Game
       end # End cases for "game"
 
     when *@settings[:player_names]
-      # TODO: when command is a player name 
-    end
+      case command
+      when "snippets"
+        @players[target].snippets = value.to_i
+      when "bombs"
+        @players[target].bombs = value.to_i
+      end
+    end # End of update player
   end
 
   def action(command, value)
@@ -74,7 +86,7 @@ class Game
     when "character"
       puts @settings[:character]
     when "move"
-      # TODO: Move the bot
+      puts Bot.move(self)
     end
   end
 
@@ -90,8 +102,8 @@ class Game
         break
       end
 
+      # Split the input string by commas and call the proper method
       command_parts = line.split()
-
       key = command_parts[0]
       case key
       when "settings"
@@ -100,12 +112,11 @@ class Game
         self.update(command_parts[1],command_parts[2], command_parts[3])
       when "action"
         self.action(command_parts[1],command_parts[2])
-      when "quit"
-        not_finished=false
       else 
         puts "Invalid command"
       end
     end
+
   end # End of run
 
 end

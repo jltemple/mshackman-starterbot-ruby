@@ -1,7 +1,10 @@
 class Player
-	def initialize
+	attr_accessor :name, :snippets, :bombs, :row, :col
+
+	def initialize(name)
+		@name = name
 	    @snippets = 0
-	    @mines = false
+	    @bombs = 0
 	    @row = 0
 	    @col = 0
 	end
