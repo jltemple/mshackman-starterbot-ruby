@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative 'game'
-require_relative 'board'
+require './game'
 
-game = Game.new
+game = Game.new("bixiette")
 
 game.run()
+
+p game

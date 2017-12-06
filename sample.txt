@@ -14,4 +14,3 @@ update player0 bombs 0
 update player1 snippets 0
 update player1 bombs 0
 action move 10000
-

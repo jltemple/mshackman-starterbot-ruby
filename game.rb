@@ -1,41 +1,36 @@
+require './player'
+require './board'
+
 class Game
 
-  def initialize
-    @initial_timebank = 0
-    @time_per_move = 10
-    @player_names = []
-    @my_bot = "not set"
-    @my_botid = -1
-    @field_width = 0
-    @field_height = 0
-    @max_rounds = 0
+  def initialize(character)
+    @settings = {
+      initial_timebank: 0,
+      time_per_move: 10,
+      player_names: [],
+      my_bot: nil,
+      my_botid: -1,
+      field_width: 0,
+      field_height: 0,
+      max_rounds: 0,
+      character: character
+    }
 
     @field = nil
     @round = 0
     @last_update = 0
     @last_timebank = 0
+
+    @players = [Player.new, Player.new]
   end
 
-  def setting(command, value)
+  def set_settings(command, value)
     case command
-    when "timebank"
-      @timebank = value.to_i
-    when "time_per_move"
-      @time_per_move = value.to_i
     when "player_names"
       @player_names = value.split(',')
-    when "your_bot"
-      @my_bot = value
-    when "your_botid"
-      @my_botid = value.to_i
-    when "field_width"
-      @field_width = value.to_i
-    when "field_height"
-      @field_height = value.to_i
-    when "max_rounds"
-      @max_rounds = value.to_i
+    when "timebank", "time_per_move", "your_bot", "your_botid", "field_width", "field_height", "max_rounds"
+      @settings[command] = value
     end # Ending setting the setting
-
     puts "Setting #{command} to #{value}"
   end
 
@@ -65,17 +60,24 @@ class Game
     not_finished=true
 
     while not_finished
-      line = gets.chomp
+
+      line = gets
+      if line != nil
+        line.chomp!
+      else
+        break
+      end
+
       command_parts = line.split()
 
-      key0 = command_parts[0]
-      case key0
+      key = command_parts[0]
+      case key
       when "settings"
-        self.update_settings(command_parts[1],command_parts[2])
+        self.set_settings(command_parts[1],command_parts[2])
       when "update"
-
+        self.update(command_parts[1],command_parts[2], command_parts[3])
       when "action"
-        do_action(command_parts[1],command_parts[2])
+        self.action(command_parts[1],command_parts[2])
       when "quit"
         not_finished=false
       else 
