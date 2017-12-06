@@ -1,5 +1,5 @@
 require './player'
-require './board'
+require './field'
 
 class Game
 
@@ -42,7 +42,7 @@ class Game
         # TODO: update the round
       when "field"
         if @field.nil?
-          @field = Board.new(@settings[:field_width], @settings[:field_height])
+          @field = Field.new(@settings[:field_width], @settings[:field_height])
         else
           # TODO: Update the field
         end
