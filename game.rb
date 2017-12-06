@@ -29,7 +29,7 @@ class Game
     when "player_names"
       @player_names = value.split(',')
     when "timebank", "time_per_move", "your_bot", "your_botid", "field_width", "field_height", "max_rounds"
-      @settings[command] = value
+      @settings[command.to_sym] = value.to_i
     end # Ending setting the setting
     puts "Setting #{command} to #{value}"
   end
@@ -41,7 +41,11 @@ class Game
       when "round"
         # TODO: update the round
       when "field"
-        # TODO: Update the field
+        if @field.nil?
+          @field = Board.new(@settings[:field_width], @settings[:field_height])
+        else
+          # TODO: Update the field
+        end
       end
     # TODO: when command is a player nmae 
     end  
