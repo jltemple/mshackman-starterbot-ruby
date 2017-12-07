@@ -67,8 +67,9 @@ class Game
       when "field"
         if @field.nil?
           @field = Field.new(@settings[:field_width], @settings[:field_height])
+          @field.set_player_string(@settings[:my_botid])
         end
-        @field.parseFromString(value)
+        @field.parse_from_string(value)
       end # End cases for "game"
 
     when *@settings[:player_names]

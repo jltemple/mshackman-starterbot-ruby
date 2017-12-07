@@ -1,5 +1,20 @@
+# Class for the playing field
+#
+# Some referneces for maze manuevering: https://defuse.ca/blog/ruby-maze-solver.html
+#
+
 class Field
   S_EMPTY, S_BLOCKED, S_PLAYER, S_BUG_SPAWN, S_GATE, S_BUG, S_BOMB, S_CODE = ['.', 'x', 'P', 'S', 'G', 'E', 'B', 'C']
+
+  DIRECTIONS = {
+    "up" => [0,-1],
+    "down" =>  [0,1],
+    "left" => [-1,0],
+    "right" => [1,0]
+  }
+
+  ROW = 0
+  COL = 1
 
   def initialize(width, height)
     @width = width
@@ -14,13 +29,21 @@ class Field
       bombs: Array.new,
       ticking_bombs: Array.new
     }
+
+    @strings = {
+      me: ''
+    }
   end
 
   def initialize_field(width, height)
     Array.new(width){Array.new(height)}
   end
 
-  def clearFieldCells
+  def set_player_string(my_botid)
+    @strings[:me] = S_PLAYER + my_botid.to_s
+  end
+
+  def clear_field_cells
     @cells.each do |column| 
       column.each do |cell|
         cell = nil
@@ -28,7 +51,7 @@ class Field
     end
   end
 
-  def clearPositions
+  def clear_positions
     @positions = {
       me: nil,
       opponent: nil,
@@ -39,18 +62,27 @@ class Field
     }
   end
 
-  def clearField
-    self.clearFieldCells()
-    self.clearPositions()    
+  def clear_field
+    self.clear_field_cells()
+    self.positions()    
 	end
 
-	def parseFromString(input)
-    cells = input.split(",")
+	def parse_from_string(input)
+    new_cells = input.split(",")
     x = 0
     y = 0
 
-    cells.each do |cellString| 
+    new_cells.each do |cellString| 
       @cells[x][y] = cellString
+
+      case cellString[0]
+      when S_PLAYER
+        if cellString.eql? @strings[:me]
+          @positions[:me] = [x,y]
+        else
+          @positions[:opponent] = [x,y]
+        end
+      end
 
       x += 1
       if x == @width
@@ -58,6 +90,31 @@ class Field
         y += 1
       end
     end # End looping through cellString
+  end
+
+  def valid_move?(start,move)
+    delta = DIRECTIONS[move]
+    check_cell = [start[ROW] + delta[ROW],
+                  start[COL] + delta[COL]]
+    return @cells[check_cell[ROW]][check_cell[COL]] != S_BLOCKED
+  end
+
+  def valid_move_for_me?(move)
+    self.valid_move?(@positions[:me],move)
+  end
+
+  def valid_moves(start)
+    valid_list = []
+    DIRECTIONS.each do |direction,delta|
+      if self.valid_move?(start,direction)
+        valid_list.push(direction) 
+      end
+    end
+    return valid_list
+  end
+
+  def valid_moves_for_me
+    self.valid_moves(@positions[:me])
   end
 
 end

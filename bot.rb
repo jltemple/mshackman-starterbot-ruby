@@ -6,7 +6,7 @@ module Bot
 	def self.move(game)
 
 		# TODO: Get actual valid moves
-		valid_moves = ["up","down","left","right"]
+		valid_moves = game.field.valid_moves_for_me
     
     # Pass when no valid moves
     if (valid_moves.size <= 0) 
