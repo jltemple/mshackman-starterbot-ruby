@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-require './game'
+STDOUT.sync = true
+
+require_relative 'game'
 
 game = Game.new("bixiette")
 

@@ -13,8 +13,7 @@ class Field
     "right" => [1,0]
   }
 
-  ROW = 0
-  COL = 1
+  ROW, COL = [0,1]
 
   def initialize(width, height)
     @width = width
@@ -27,11 +26,15 @@ class Field
       enemies: Array.new,
       snippets: Array.new,
       bombs: Array.new,
-      ticking_bombs: Array.new
+      ticking_bombs: Array.new,
+      left_gate: nil,
+      right_gate: nil
     }
 
     @strings = {
-      me: ''
+      me: '',
+      left_gate: S_GATE + 'l',
+      right_gate: S_GATE + 'r'
     }
   end
 
@@ -58,7 +61,9 @@ class Field
       enemies: Array.new,
       snippets: Array.new,
       bombs: Array.new,
-      ticking_bombs: Array.new
+      ticking_bombs: Array.new,
+      left_gate: nil,
+      right_gate: nil
     }
   end
 
@@ -75,15 +80,28 @@ class Field
     new_cells.each do |cellString| 
       @cells[x][y] = cellString
 
-      case cellString[0]
-      when S_PLAYER
-        if cellString.eql? @strings[:me]
-          @positions[:me] = [x,y]
-        else
-          @positions[:opponent] = [x,y]
-        end
-      end
+      cellParts = cellString.split(";")
 
+      cellParts.each do |cellPart|
+        case cellPart[0]
+        when S_PLAYER
+          if cellPart.eql? @strings[:me]
+            @positions[:me] = [x,y]
+          else
+            @positions[:opponent] = [x,y]
+          end
+        when S_GATE
+          if @positions[:left_gate].nil? || @positions[:right_gate].nil?
+            if cellPart.eql? @strings[:left_gate]
+              @positions[:left_gate] = [x,y]
+            elsif cellPart.eql? @strings[:right_gate]
+              @positions[:right_gate] = [x,y]
+            end
+          end
+        end
+      end # End looping through cellParts
+
+      # Increment to next cell
       x += 1
       if x == @width
         x = 0
@@ -104,6 +122,14 @@ class Field
   end
 
   def valid_moves(start)
+    # Check if Gate
+    if start == @positions[:left_gate]
+      return ['left']
+    elsif start == @positions[:right_gate]
+      return ['right']
+    end
+
+    # Find valid list
     valid_list = []
     DIRECTIONS.each do |direction,delta|
       if self.valid_move?(start,direction)
@@ -113,7 +139,7 @@ class Field
     return valid_list
   end
 
-  def valid_moves_for_me
+  def valid_moves_for_me    
     self.valid_moves(@positions[:me])
   end
 

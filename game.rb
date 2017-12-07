@@ -1,6 +1,6 @@
-require './player'
-require './field'
-require './bot'
+require_relative 'player'
+require_relative 'field'
+require_relative 'bot'
 
 class Game
   attr_reader :settings, :players, :field
@@ -100,7 +100,7 @@ class Game
       if line != nil
         line.chomp!
       else
-        break
+        next
       end
 
       # Split the input string by commas and call the proper method
